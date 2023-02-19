@@ -1,4 +1,3 @@
-import 'package:dash_sql/pages/workbench/databaseSidePanel/widgets/mongoDatabaseConnectionWidget.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:dash_sql/data/databaseConnection.dart';
 
@@ -11,8 +10,7 @@ class MongoDbConnection extends DatabaseConnection {
     required super.connectionHost,
     required super.connectionPort,
     required super.databaseName,
-    required super.username,
-    super.builder = MongoDatabaseConnectionWidget.builder
+    required super.username
   });
 
 
@@ -37,16 +35,14 @@ class MongoDbConnection extends DatabaseConnection {
   }
 
 
+
   @override
-  Future<List<String>?> listDatabases() async {
-    if(database == null) { return null; }
-    return [database!.databaseName!];
-  }
-  @override
-  Future<List<String>?> listSchemas() async {
-    if(database == null) { return null; }
-    List<String?> collections = await database!.getCollectionNames();
+  Future<List<String>?> listSchemas({String? database}) async {
+    if(this.database == null) { return null; }
+    List<String?> collections = await this.database!.getCollectionNames();
     schemaNames = List<String>.generate(collections.length, (index) => (collections[index]??"N/A"));
     return schemaNames;
   }
+  @override
+  Future<List<String>?> listTables({String? schema}) async => throw UnimplementedError();
 }

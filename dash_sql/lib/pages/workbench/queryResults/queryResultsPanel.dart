@@ -33,6 +33,7 @@ class _QueryResultsPanelState extends State<QueryResultsPanel> {
                 titles: ["Name", "Age", "Score"]
               ),
               decorator: GridSheetDecorator(
+                dividerHeight: 2,
                 oddRow: Colors.blue[100],
                 rowNumberStyle: const TextStyle(color: Colors.white),
                 headerDecorator: const BoxDecoration(

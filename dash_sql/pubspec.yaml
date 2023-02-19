@@ -10,8 +10,12 @@ dependencies:
   flutter:
     sdk: flutter
   resizable_widget: ^1.0.5
-  flutter_quill: ^6.3.4
-
+  rich_text_controller: ^1.4.0
+  #flutter_quill: ^6.3.4
+  flutter_html: ^2.2.1
+  #html_editor_enhanced: ^2.5.1
+  
+  mysql1: ^0.20.0
   mongo_dart: ^0.8.2
 
 dev_dependencies:

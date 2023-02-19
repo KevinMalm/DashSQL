@@ -22,9 +22,8 @@ class _WorkbenchPageState extends State<WorkbenchPage> {
 
   @override
   Widget build(BuildContext context) {
-    
     Widget sidePanel    = const DatabaseWorkbenchSidePanel();
-    Widget topPanel     = const SqlIdePanel();
+    Widget topPanel     = SqlIdePanel();
     Widget bottomPanel  = const QueryResultsPanel();
 
     Widget mainBody     = ResizableWidget(

@@ -1,8 +1,10 @@
 
 
 
+import 'package:dash_sql/data/connections/mariaDatabaseConnection.dart';
 import 'package:dash_sql/data/connections/mongoDatabaseConnection.dart';
 import 'package:dash_sql/data/databaseConnection.dart';
+import 'package:dash_sql/libraries/popupLibrary.dart';
 
 class DatabaseConnectionManager {
 
@@ -22,10 +24,23 @@ class DatabaseConnectionManager {
       databaseName: "DOCTOR",
       username: "tester"
     ),
+    MariaDbConnection(
+      name: "Maria DB",
+      connectionHost: "127.0.0.1",
+      connectionPort: 3306,
+      databaseName: "rscape",
+      username: "rscapeUser"
+    ),
     MongoDbConnection(name: "123", connectionHost: "127", connectionPort: 5, databaseName: "abc", username: "abc"),
   ];
 
 
+
+  List<DatabaseConnection> getConnectedInstances() {
+    List<DatabaseConnection> connectedInstances = <DatabaseConnection>[];
+    connections.forEach((element) { if(element.connected) {connectedInstances.add(element); } });
+    return connectedInstances;
+  }
 
 
 }

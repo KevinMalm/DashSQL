@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class DashPopUplLibrary {
+class DashPopUpLibrary {
 
 
   static Future<String?> getUserInput(context, {Widget? title, String hint = "", bool obscure = false}) async {
@@ -73,4 +73,46 @@ class DashPopUplLibrary {
 
     return result;
   }
+
+
+  static Future<int?> getUserSelection(context, {Widget? title, required List<Widget> options, Widget? noOptionError})  async {
+    int? result;
+
+    await showDialog(context: context, builder: (context) {
+      return AlertDialog(
+        title: title,
+        content: SizedBox(
+          height: 200,
+          width: 100,
+          child: (options.isEmpty ?
+                 noOptionError :
+                 ListView(children: List<Widget>.generate(
+                                                options.length,
+                                                (index) => ElevatedButton(
+                                                              onPressed: () {
+                                                                  result = index;
+                                                                  Navigator.of(context).pop();
+                                                                },
+                                                              child: options[index]
+                                                            )
+                                        ),
+                 )
+          ),
+        ),
+        actions: [
+          ElevatedButton(
+              onPressed: (){
+              result = null;
+              Navigator.of(context).pop();
+            },
+            child: const Text("Cancel")
+          ),
+        ],
+      );
+    });
+
+
+    return result;
+  }
+
 }
