@@ -1,17 +1,14 @@
-
-
-import 'package:dash_sql/data/databaseConnection.dart';
+import 'package:dash_sql/data/connectionArtifacts/schemaData.dart';
 import 'package:dash_sql/libraries/dashColorLibrary.dart';
 import 'package:dash_sql/libraries/popupLibrary.dart';
-import 'package:dash_sql/libraries/widgetLibrary.dart';
 import 'package:dash_sql/pages/workbench/databaseSidePanel/widgets/schemaConnectionWidget.dart';
-import 'package:dash_sql/pages/workbench/databaseSidePanel/widgets/templateConnectionWidget.dart';
+import 'package:dash_sql/pages/workbench/databaseSidePanel/widgets/templateConnectionBar.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseConnectionWidget extends TemplateConnectionWidget {
   
-  bool                     expanded             = false;
-  late List<String>?       loadedSchemas;
+  bool                           expanded             = false;
+  late List<DatabaseSchemaData>? loadedSchemas;
 
   DatabaseConnectionWidget({
     required super.connection,
@@ -21,7 +18,6 @@ class DatabaseConnectionWidget extends TemplateConnectionWidget {
   
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
   Future<bool> attemptLogin(context) async {
@@ -81,6 +77,7 @@ class DatabaseConnectionWidget extends TemplateConnectionWidget {
       );
     }
     /* --------- ACTION: connect --------- */
+    return const SizedBox();
     return GestureDetector(
       onTap: () => attemptLogin(context),
       child: const MouseRegion(
@@ -95,7 +92,7 @@ class DatabaseConnectionWidget extends TemplateConnectionWidget {
       onTap: () => expandOutline(context),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Icon(Icons.label_off, color: (connection.connected ? DashColorLibrary.bluePrimary : DashColorLibrary.backgroundBlack),)),
+        child: Icon(Icons.data_array, color: (connection.connected ? DashColorLibrary.bluePrimary : DashColorLibrary.backgroundBlack),)),
     );
   }
 
@@ -103,8 +100,10 @@ class DatabaseConnectionWidget extends TemplateConnectionWidget {
   @override
   Widget buildHeader(context) { return Row(
     children: [
+      const SizedBox(width: 10,),
       buildLeadingIcon(context),
-      Text(connection.name, style: const TextStyle(color: Colors.grey),),
+      const SizedBox(width: 5,),
+      Text(connection.name, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.grey),),
       const Spacer(),
       buildActionButton(context)
     ],
@@ -112,7 +111,6 @@ class DatabaseConnectionWidget extends TemplateConnectionWidget {
   
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 
@@ -126,7 +124,6 @@ class DatabaseConnectionWidget extends TemplateConnectionWidget {
 
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 

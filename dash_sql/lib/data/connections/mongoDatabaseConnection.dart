@@ -14,35 +14,4 @@ class MongoDbConnection extends DatabaseConnection {
   });
 
 
-  @override
-  Future<String?> connect({required String password}) async {
-    try {
-      database = Db("mongodb://$connectionHost:$connectionPort/$databaseName");
-
-      await database!.open();
-      connected = true;
-    } catch(e) {
-      connected = false;
-      return e.toString();
-    }
-  }
-
-  @override
-  Future<void> disconnect() async {
-    if(database == null) { return; }
-    await database!.close();
-    connected = false;
-  }
-
-
-
-  @override
-  Future<List<String>?> listSchemas({String? database}) async {
-    if(this.database == null) { return null; }
-    List<String?> collections = await this.database!.getCollectionNames();
-    schemaNames = List<String>.generate(collections.length, (index) => (collections[index]??"N/A"));
-    return schemaNames;
-  }
-  @override
-  Future<List<String>?> listTables({String? schema}) async => throw UnimplementedError();
 }

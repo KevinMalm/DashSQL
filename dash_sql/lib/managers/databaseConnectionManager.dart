@@ -1,10 +1,8 @@
-
-
+import 'dart:async';
 
 import 'package:dash_sql/data/connections/mariaDatabaseConnection.dart';
 import 'package:dash_sql/data/connections/mongoDatabaseConnection.dart';
 import 'package:dash_sql/data/databaseConnection.dart';
-import 'package:dash_sql/libraries/popupLibrary.dart';
 
 class DatabaseConnectionManager {
 
@@ -16,6 +14,10 @@ class DatabaseConnectionManager {
   }
 
   /* ------------------------------------------------------------------------------------------------------------------------------ */
+  /// Controls refreshed when Active Object is changed
+  final StreamController stream         = StreamController.broadcast();
+  DatabaseArtifact?      activeArtifact;
+
   List<DatabaseConnection> connections = <DatabaseConnection>[
     MongoDbConnection(
       name: "Doctor DB",
@@ -42,5 +44,14 @@ class DatabaseConnectionManager {
     return connectedInstances;
   }
 
+
+  DatabaseConnectionManager() {
+    connections[1].connect(password: 'user_password_!0');
+  }
+
+  void updateActiveElement({required DatabaseArtifact obj}) {
+    activeArtifact = obj;
+    stream.add(this);
+  }
 
 }

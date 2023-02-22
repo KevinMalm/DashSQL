@@ -1,6 +1,16 @@
 
 
-class DatabaseConnection {
+import 'package:dash_sql/data/connectionArtifacts/fieldData.dart';
+import 'package:dash_sql/data/connectionArtifacts/queryData.dart';
+import 'package:dash_sql/data/connectionArtifacts/schemaData.dart';
+import 'package:dash_sql/data/connectionArtifacts/tableData.dart';
+
+
+class DatabaseArtifact {
+
+}
+
+class DatabaseConnection extends DatabaseArtifact {
   /// Internal Id
   /// Name
   /// Comments
@@ -25,18 +35,29 @@ class DatabaseConnection {
   /* ------------------------------- */
   /* ----------- CONFIG ------------ */
   /* ------------------------------- */
+  /// Display name of Connection
   final String name;
+  /// IP / Host name for establishing connection
   final String connectionHost;
+  /// Port to connect on
   final int    connectionPort;
+  /// Default Database to connect to
   final String databaseName;
+  /// State of if connected
   bool         connected = false;
+  /// Saved Username for establishing connection
   final String username;
+  /// Key to encrypted - saved password
   String?      passwordVaultKey;
+
+  late bool     useSSL;
+  late bool     readOnly;
   /* ------------------------------- */
   /* ------- REFRESH-ABLE ---------- */
   /* ------------------------------- */
-  List<String>? databaseNames;
-  List<String>? schemaNames;
+  /// List of Databases paired with schema name
+  List<DatabaseSchemaData>? schemas;
+   
 
 
   DatabaseConnection({
@@ -44,52 +65,18 @@ class DatabaseConnection {
     required this.connectionHost,
     required this.connectionPort,
     required this.databaseName,
-    required this.username
+    required this.username,
+    this.useSSL   = false,
+    this.readOnly = false
   });
 
-
+  void setReadOnlyMode({required bool mode}) => readOnly = mode;
 
   Future<String?> connect({required String password}) async => throw UnimplementedError();
   Future<void> disconnect() async => throw UnimplementedError();
   Future<QueryResult>   query({required String query}) => throw UnimplementedError();
-  Future<List<String>?> listSchemas() async => throw UnimplementedError();
-  Future<List<String>?> listTables({required String schema}) async => throw UnimplementedError();
-  Future<List<TableFieldDefinition>?> describeTable({required String schema, required String table}) async => throw UnimplementedError();
+  Future<List<DatabaseSchemaData>?> listSchemas() async => throw UnimplementedError();
+  Future<List<DatabaseTableData>?> listTables({required DatabaseSchemaData schema}) async => throw UnimplementedError();
+  Future<List<DatabaseFieldData>?> describeTable({required DatabaseTableData table}) async => throw UnimplementedError();
 }
 
-class TableFieldDefinition {
-  final String fieldName;
-  final String fieldType;
-  final bool   isPk;
-  final bool   isFk;
-
-  TableFieldDefinition({
-    required this.fieldName,
-    required this.fieldType,
-    required this.isPk,
-    required this.isFk
-  });
-}
-
-class QueryResult {
-  List<String>?        fields;
-  List<List<String?>>? data;
-  String?              errorMessage;
-  QueryResult({this.errorMessage}) {
-    if(errorMessage == null) {
-      data   = <List<String?>>[];
-    }
-  }
-
-
-  void addRecord(Map<String, dynamic> data) {
-    if(fields == null) { 
-      fields = <String>[];
-      data.forEach((key, value) { fields!.add(key); });
-     }
-     List<String?> dataRows = <String?>[];
-     data.forEach((key, value) { dataRows.add((value == null ? null : value.toString())); });
-     this.data!.add(dataRows);
-  }
-
-}

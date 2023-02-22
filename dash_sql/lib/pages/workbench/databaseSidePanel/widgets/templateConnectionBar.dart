@@ -1,5 +1,4 @@
 
-
 import 'package:dash_sql/data/databaseConnection.dart';
 import 'package:dash_sql/libraries/dashColorLibrary.dart';
 import 'package:dash_sql/libraries/popupLibrary.dart';
@@ -7,7 +6,7 @@ import 'package:dash_sql/libraries/widgetLibrary.dart';
 import 'package:flutter/material.dart';
 
 class TemplateConnectionWidget extends StatefulWidget {
-  final double                    leftOffset  = 20;
+  final double                    leftOffset  = 30;
 
   final double                    thisOffset;
   bool                            expanded    = false;
@@ -47,7 +46,6 @@ class _TemplateConnectionWidgetState extends State<TemplateConnectionWidget> {
 
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
   
@@ -66,14 +64,12 @@ class _TemplateConnectionWidgetState extends State<TemplateConnectionWidget> {
 
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 
 
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 
@@ -88,7 +84,6 @@ class _TemplateConnectionWidgetState extends State<TemplateConnectionWidget> {
 
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 

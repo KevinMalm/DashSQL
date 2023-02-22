@@ -1,16 +1,12 @@
-
-
 import 'package:dash_sql/data/databaseConnection.dart';
 import 'package:dash_sql/libraries/popupLibrary.dart';
 import 'package:dash_sql/managers/databaseConnectionManager.dart';
-import 'package:dash_sql/pages/workbench/ide/editorNotepad/editorNoteInstance.dart';
+import 'package:dash_sql/pages/workbench/ide/widgets/noteEditor/noteEditorInstance.dart';
 import 'package:flutter/material.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 
-
-
-class EditorNoteSubController {
+class EditorNotePadController {
 
   final Map<RegExp, TextStyle> patternUser = {
     RegExp(r"\B@[a-zA-Z0-9]+\b"):
@@ -26,7 +22,9 @@ class EditorNoteSubController {
   final List<EditorNoteInstance> instances      = <EditorNoteInstance>[];
   final DatabaseConnection       connection;
 
-  EditorNoteSubController({required this.connection});
+  EditorNotePadController({required this.connection}) {
+    addNewNotePadInstance();
+  }
 
   void addNewController({required int index}) {
     subControllers.insert(index, RichTextController(
@@ -93,32 +91,4 @@ class EditorNoteSubController {
 
   }
 
-}
-
-
-class EditorNoteController {
-  List<EditorNoteSubController> subControllers = <EditorNoteSubController>[];
-
-
-  Future<EditorNoteSubController?> addNewController(context) async {
-    List<DatabaseConnection>  connectedInstances = await DatabaseConnectionManager.getInstance().getConnectedInstances();
-    int?                      selectedResult;
-    if(connectedInstances.length != 1) {
-      selectedResult = await DashPopUpLibrary.getUserSelection(context,
-                                                title:         const Text("Select Database Connection"),
-                                                noOptionError: const Text("No Databases Connected"),
-                                                options:       List<Widget>.generate(
-                                                                    connectedInstances.length,
-                                                                    (index) => Text(connectedInstances[index].name)
-                                                                )
-                                              );
-    } else {
-      selectedResult = 0;
-    }
-    if(selectedResult == null) { return null; }  
-    subControllers.add(
-      EditorNoteSubController(connection: connectedInstances[selectedResult])
-    );
-    return subControllers.last;
-  }
 }

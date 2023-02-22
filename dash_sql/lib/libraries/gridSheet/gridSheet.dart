@@ -59,7 +59,6 @@ class _GridSheetState extends State<GridSheet> {
     bool isSelected = _controller.getSelectedState(rowI, columnJ);
     return GestureDetector(
       onTap: () => _controller.singleActionToggleSelection(i: rowI, j: columnJ),
-      onPanUpdate: (details) => _controller.setDragSelected(i: rowI, j: columnJ),
       child: MouseRegion(
         child: Container(
           height: _rowHeight,
@@ -128,7 +127,7 @@ class _GridSheetState extends State<GridSheet> {
             child: SizedBox(height: 16, width: 15, child: FittedBox(child: Icon(Icons.bar_chart, color: widget.decorator.rowNumberStyle.color??Colors.black,)),)); }
            return GestureDetector(
             onTap: () => _controller.selectRow(i: index -1),
-            child: SizedBox(height: 16, child: Text(index.toString(), style: widget.decorator.rowNumberStyle,)));
+            child: SizedBox(height: _rowHeight + _divHeight, child: Text(index.toString(), style: widget.decorator.rowNumberStyle,)));
         }),),
     );
   }

@@ -1,25 +1,31 @@
 
-import 'package:dash_sql/data/databaseConnection.dart';
+import 'package:dash_sql/data/connectionArtifacts/schemaData.dart';
+import 'package:dash_sql/data/connectionArtifacts/tableData.dart';
 import 'package:dash_sql/libraries/dashColorLibrary.dart';
+import 'package:dash_sql/managers/databaseConnectionManager.dart';
 import 'package:dash_sql/pages/workbench/databaseSidePanel/widgets/tableConnectionWidget.dart';
-import 'package:dash_sql/pages/workbench/databaseSidePanel/widgets/templateConnectionWidget.dart';
+import 'package:dash_sql/pages/workbench/databaseSidePanel/widgets/templateConnectionBar.dart';
 import 'package:flutter/material.dart';
 
 class SchemaConnectionWidget extends TemplateConnectionWidget {
 
-  final String       schema;
-  List<String>?      tables;
+  final DatabaseSchemaData       schema;
+  List<DatabaseTableData>?       tables;
+  late DatabaseConnectionManager databaseConnectionManager;
+  bool                           isSelected = false;
+
   SchemaConnectionWidget({
     super.key,
     required super.connection,
     required this.schema,
     required super.thisOffset
-  });
+  }) {
+    databaseConnectionManager = DatabaseConnectionManager.getInstance();
+  }
 
 
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 
@@ -56,29 +62,56 @@ class SchemaConnectionWidget extends TemplateConnectionWidget {
   Widget buildLeadingIcon(context) {
     return GestureDetector(
       onTap: () => expandOutline(context),
-      child: const MouseRegion(
+      child: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: Icon(Icons.newspaper)),
+        child: Icon(
+          Icons.dataset_outlined,
+          color: (expanded || isSelected ? DashColorLibrary.bluePrimary : DashColorLibrary.backgroundBlack),
+        )),
+    );
+  }
+
+  Widget buildSchemaName(context) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => DatabaseConnectionManager.getInstance().updateActiveElement(obj: schema),
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Text(schema.schemaName, overflow: TextOverflow.ellipsis, style: const TextStyle(color: Colors.grey),),
+        ),
+      ),
     );
   }
 
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 
   @override
-  Widget buildHeader(context) { return Row(
-    children: [
-      SizedBox(width: thisOffset),
-      buildLeadingIcon(context),
-      const SizedBox(width: 5),
-      Text(schema, style: const TextStyle(color: Colors.grey),),
-      const Spacer(),
-      buildActionButton(context)
-    ],
-  ); }
+  Widget buildHeader(context) {
+    return StreamBuilder(
+      stream: databaseConnectionManager.stream.stream,
+      builder: (context, snapshot) {
+        isSelected = databaseConnectionManager.activeArtifact == schema;
+        return Padding(
+          padding: EdgeInsets.only(left: thisOffset),
+          child: Container(
+            color: ((databaseConnectionManager.activeArtifact == schema)) ? DashColorLibrary.backgroundLight : Colors.transparent,
+            child: Row(
+              children: [
+                //SizedBox(width: thisOffset),
+                buildLeadingIcon(context),
+                const SizedBox(width: 5),
+                buildSchemaName(context),
+                buildActionButton(context)
+              ],
+            ),
+          ),
+        );
+      }
+    );
+  }
 
   @override
   Widget buildBody(context) {
@@ -86,7 +119,6 @@ class SchemaConnectionWidget extends TemplateConnectionWidget {
     return Column(
       children: List<Widget>.generate(tables!.length, (index) { return TableConnectionWidget(
                                                                           connection: connection,
-                                                                          schema: schema,
                                                                           table: tables![index],
                                                                           thisOffset: thisOffset + leftOffset,
                                                                       ); })
@@ -94,7 +126,6 @@ class SchemaConnectionWidget extends TemplateConnectionWidget {
   }
   /*
     ---------------------------------------------------------------------------------------------------
-
     ---------------------------------------------------------------------------------------------------
   */
 

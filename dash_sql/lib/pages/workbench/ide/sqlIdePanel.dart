@@ -1,9 +1,9 @@
 import 'package:dash_sql/libraries/dashColorLibrary.dart';
-import 'package:dash_sql/pages/workbench/ide/editorNotepad/editorNoteController.dart';
-import 'package:dash_sql/pages/workbench/ide/editorNotepad/editorNotePad.dart';
-import 'package:dash_sql/pages/workbench/ide/editorNotepad/tabbedWindow.dart';
+import 'package:dash_sql/libraries/tabbedWindow/tabbedWindow.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+
+import 'editorNoteController.dart';
 
 
 class SqlIdePanel extends StatefulWidget {
@@ -23,6 +23,20 @@ class SqlIdePanel extends StatefulWidget {
 class _SqlIdePanelState extends State<SqlIdePanel> {
   final double headerHeight = 32;
 
+
+  Widget buildHeaderSpacer() => const SizedBox(width: 5,);
+
+  Widget buildHeaderButton({required void Function() callback, required IconData icon, required String tooltip}) {
+    return Tooltip(
+      message: tooltip,
+      child: ElevatedButton(
+        onPressed: callback,
+        style:     ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(DashColorLibrary.bluePrimary)),
+        child:     Icon(icon)
+      ),
+    );
+  }
+
   Widget buildHeader(context) {
     /// Buttons:
     /// - Open
@@ -34,24 +48,75 @@ class _SqlIdePanelState extends State<SqlIdePanel> {
     /// - Query all
     /// - Set Read Only
     /// 
-    return Container(
-      height: headerHeight,
-      child: Row(children: [
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.folder)),        // open file
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.save)),          // save as file
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.find_in_page)),  // query 
-
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.undo)),          // undo from stack
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.redo)),          // redo from stack
-
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.add_box)),       // add new box 
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.copy)),          // duplicate block
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.delete)),        // delete block 
-
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.playlist_play)), // run all
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.lock)),          // read only mode
-        ElevatedButton(onPressed: (){}, child: const Icon(Icons.upload)),        // commit
-      ]),
+    return StreamBuilder<Object>(
+      stream: null,
+      builder: (context, snapshot) {
+        return SizedBox(
+          height: headerHeight,
+          child: Row(children: [
+            buildHeaderButton(          // open file
+              callback: widget.controller.openFile,
+              icon: Icons.folder,
+              tooltip: 'Open File'
+            ),  
+            buildHeaderButton(          // save file
+              callback: widget.controller.saveFile,
+              icon: Icons.save,
+              tooltip: 'Save'
+            ),
+            buildHeaderButton(          // save file
+              callback: widget.controller.saveFile,
+              icon: Icons.save_as,
+              tooltip: 'Save As'
+            ),
+            buildHeaderSpacer(),
+            buildHeaderButton(          // undo from stack
+              callback: widget.controller.undoAction,
+              icon: Icons.undo,
+              tooltip: 'Undo Action'
+            ),  
+            buildHeaderButton(          // redo from stack
+              callback: widget.controller.redoAction,
+              icon: Icons.redo,
+              tooltip: 'Redo Action'
+            ),
+            buildHeaderSpacer(),
+            ElevatedButton(onPressed: (){}, child: const Icon(Icons.find_in_page)),  // query 
+            buildHeaderSpacer(),
+            buildHeaderButton(          // add new block
+              callback: widget.controller.addNewBlock,
+              icon: Icons.add_box,
+              tooltip: 'Add Notepad'
+            ),  
+            buildHeaderButton(          // duplicate block
+              callback: widget.controller.duplicateBlock,
+              icon: Icons.copy,
+              tooltip: 'Duplicate Notepad'
+            ),
+            buildHeaderButton(          // delete block
+              callback: widget.controller.deletingBlock,
+              icon: Icons.delete,
+              tooltip: 'Delete Notepad'
+            ),
+            buildHeaderSpacer(),
+            buildHeaderButton(          // run all
+              callback: widget.controller.runAllBlocks,
+              icon: Icons.playlist_play,
+              tooltip: 'Run Notebook'
+            ),
+            buildHeaderButton(          // read only mode
+              callback: widget.controller.toggleReadOnlyMode,
+              icon: Icons.lock,
+              tooltip: 'Set Read-only'
+            ),
+            buildHeaderButton(          // commit
+              callback: widget.controller.commitSession,
+              icon: Icons.upload,
+              tooltip: 'Commit'
+            ),
+          ]),
+        );
+      }
     );
   }
 

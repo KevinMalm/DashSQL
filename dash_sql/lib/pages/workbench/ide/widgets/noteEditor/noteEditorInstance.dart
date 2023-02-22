@@ -1,9 +1,9 @@
 
 
-
+import 'package:dash_sql/data/connectionArtifacts/queryData.dart';
 import 'package:dash_sql/data/databaseConnection.dart';
 import 'package:dash_sql/libraries/dashColorLibrary.dart';
-import 'package:dash_sql/pages/workbench/ide/editorNotepad/editorNoteController.dart';
+import 'package:dash_sql/managers/queryResultsManager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
@@ -40,8 +40,12 @@ class EditorNoteInstance extends StatefulWidget {
 
 class _EditorNoteInstanceState extends State<EditorNoteInstance> {
 
+  QueryResultsManager resultsManager = QueryResultsManager.getInstance();
+  
   String lineCounterStr = '1';
   int    lineCounter    = 1;
+
+
 
   void requestFocus() { setState(() => widget.focusNode.requestFocus()); }
 
@@ -50,9 +54,12 @@ class _EditorNoteInstanceState extends State<EditorNoteInstance> {
   void executeStatement() async {
     print("Executing: ${widget.controller.text}");
     requestFocus();
-    
+    resultsManager.clearQueryResults();
+    resultsManager.prepQueryResult(tabName: "Query");
+    resultsManager.prepQueryResult(tabName: "Query2");
     QueryResult result = await widget.connection.query(query: widget.controller.text);
-
+    resultsManager.writeQueryResults(tabName: "Query", results: result);
+    resultsManager.writeQueryResults(tabName: "Query2", results: result);
     return;
   }
 
@@ -194,5 +201,3 @@ class _EditorNoteInstanceState extends State<EditorNoteInstance> {
   }
 
 }
-
-
